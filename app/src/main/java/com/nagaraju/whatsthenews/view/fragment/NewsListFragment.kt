@@ -44,11 +44,11 @@ class NewsListFragment : Fragment() {
         lifecycleScope.launch {
             viewmodel.newsFlow.collectLatest { pagingData ->
                 adapter.submitData(pagingData)
-                Log.d("TAG", "onViewCreated: ${pagingData}")
-
             }
 
         }
     }
+
+
 
 }
