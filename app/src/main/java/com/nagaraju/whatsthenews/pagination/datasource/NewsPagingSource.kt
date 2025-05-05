@@ -23,7 +23,7 @@ class NewsPagingSource(
             val page = params.key ?: 1
             val pageSize = params.loadSize
 
-            val response = apiService.getNewsList("IPL 2025", page, pageSize, Constants.API_KEY)
+            val response = apiService.getNewsList("RCB", page, pageSize, Constants.API_KEY)
             Log.d("TAG", "articles: ${response.articles.size}")
             LoadResult.Page(
                 data = response.articles,

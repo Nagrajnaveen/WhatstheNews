@@ -21,7 +21,8 @@ class NewsListRepository  {
         return Pager(
             config = PagingConfig(
                 pageSize = 10,
-                enablePlaceholders = false
+//                enablePlaceholders = false,
+                prefetchDistance = 5
             ),
             pagingSourceFactory = { NewsPagingSource(apiService) }
         )

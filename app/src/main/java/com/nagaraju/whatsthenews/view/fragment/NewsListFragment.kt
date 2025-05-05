@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.nagaraju.whatsthenews.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.nagaraju.whatsthenews.databinding.FragmentNewsListBinding
@@ -24,8 +27,10 @@ import kotlinx.coroutines.launch
 class NewsListFragment : Fragment() {
 
     private lateinit var binding: FragmentNewsListBinding
-    private val viewmodel : NewsListViewModel by viewModel()
+    private val viewmodel: NewsListViewModel by viewModel()
     private lateinit var adapter: NewsListAdapter
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,15 +45,23 @@ class NewsListFragment : Fragment() {
         adapter = NewsListAdapter()
         binding.recyclerview.layoutManager = LinearLayoutManager(context)
         binding.recyclerview.adapter = adapter
-
+        swipeRefreshLayout = binding.swipeRefreshLayout
         lifecycleScope.launch {
             viewmodel.newsFlow.collectLatest { pagingData ->
                 adapter.submitData(pagingData)
-                Log.d("TAG", "onViewCreated: ${pagingData}")
-
             }
 
         }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            lifecycleScope.launch {
+                viewmodel.newsFlow.collectLatest { pagingData ->
+                    adapter.submitData(pagingData)
+                }
+            }
+        }
+
     }
+
 
 }
